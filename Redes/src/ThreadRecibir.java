@@ -6,10 +6,10 @@ import java.util.Scanner;
 public class ThreadRecibir implements Runnable{
     // atributos = cosas pasadas x parametro
     private DatagramSocket socket;
-    private Scanner lectorArchConfig;
+    private String lectorArchConfig;
     private String nombrePActual;
 
-    public ThreadRecibir(DatagramSocket socket, Scanner lectorArchConfig, String nombrePActual) {
+    public ThreadRecibir(DatagramSocket socket, String lectorArchConfig, String nombrePActual) {
         this.socket = socket;
         this.lectorArchConfig = lectorArchConfig;
         this.nombrePActual = nombrePActual;

@@ -24,8 +24,7 @@ public class Cliente {
         String nombreP=scannerLector.next();
         return nombreP;
     }
-    public static boolean verificarNombre(String nombre, Scanner lector){ //verifica si los nombres estan en el archivo
-        String linea=lector.nextLine();
+    public static boolean verificarNombre(String nombre, String linea){ //verifica si los nombres estan en el archivo
         for(int i=0;i<linea.split("-").length;i++){ //entre mas - haya, mas veces se va a correr, y por cada vuelta vamos a interesarnos en la persona que estemos parados
             String persona=linea.split("-")[i]; //separa por los - convirtiendolo en array, separando a las personas
             String nombrePerso=persona.split(":")[0];
@@ -75,15 +74,16 @@ public class Cliente {
             Scanner leerMensaje=new Scanner(System.in);
             DatagramSocket socket=new DatagramSocket(puerto);
             Scanner scannerLector=new Scanner(archivoConfig);//para leer el archivoConfig.txt
+            String info=scannerLector.nextLine();
             Scanner scannerLectorP=new Scanner(archivoPersona);//para leer el archivoPersona.txt
             String nombrePersona=Cliente.nombrePropio(scannerLectorP);
-            if(Cliente.verificarNombre(nombrePersona, scannerLector)) {
+            if(Cliente.verificarNombre(nombrePersona, info)) {
                 System.out.println("se ha verificado tu nombre y estas en el archivo");
                 while(true){
-                    Thread escucha=new Thread(new ThreadRecibir(socket, scannerLector, nombrePersona));
+                    Thread escucha=new Thread(new ThreadRecibir(socket, info, nombrePersona));
                     escucha.start(); //se corre el hilo
                     String nombreReceptor=Cliente.nombreAenviar();
-                    if(Cliente.verificarNombre(nombreReceptor, scannerLector)){
+                    if(Cliente.verificarNombre(nombreReceptor, info)){
                         System.out.println("la persona esta en el archivo");
                         System.out.println("escriba su mensaje: ");
                         String mensaje= leerMensaje.next();
@@ -93,12 +93,10 @@ public class Cliente {
             }else{
                 System.out.println("no estas en el archivo, no podes enviar mensajes");
             }
-
         } catch (FileNotFoundException e){
             throw new RuntimeException(e);
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
