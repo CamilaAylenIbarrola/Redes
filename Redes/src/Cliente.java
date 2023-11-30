@@ -35,11 +35,10 @@ public class Cliente {
         return false;
     }
 
-    public static void mandarMensaje(String emisor, String mensaje, String receptor, DatagramSocket socket, Scanner lectorArchConfig){
+    public static void mandarMensaje(String emisor, String mensaje, String receptor, DatagramSocket socket, String linea){
         String mensajeCompleto=receptor + ":" + mensaje + ":" + emisor;
         InetAddress ipSiguiente;
         int puertoSiguiente;
-        String linea=lectorArchConfig.nextLine();
         for(int i=0;i<linea.split("-").length;i++){ //se va a recorrer la lista con todas las personas y por cada vuelta se para en cada persona
             String persona=linea.split("-")[i]; //crea un array separando a cada persona una de otra por los -
             String nombrePerso=persona.split(":")[0];
@@ -87,7 +86,9 @@ public class Cliente {
                         System.out.println("la persona esta en el archivo");
                         System.out.println("escriba su mensaje: ");
                         String mensaje= leerMensaje.next();
-                        Cliente.mandarMensaje(nombrePersona, mensaje, nombreReceptor, socket, scannerLector);
+                        Cliente.mandarMensaje(nombrePersona, mensaje, nombreReceptor, socket, info);
+                    }else{
+                        System.out.println("esta persona no esta en el archivo, ingrese otro nombre");
                     }
                 }
             }else{
