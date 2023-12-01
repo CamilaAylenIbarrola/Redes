@@ -20,13 +20,13 @@ public class Cliente {
         String nombre1=s1.next();
         return nombre1;
     }
-    public static String nombrePropio(Scanner scannerLector){ //metodo para guardar el nombre propio
+    public static String nombrePropio(Scanner scannerLector){ //guarda el nombre propio
         String nombreP=scannerLector.next();
         return nombreP;
     }
-    public static boolean verificarNombre(String nombre, String linea){ //verifica si los nombres estan en el archivo
-        for(int i=0;i<linea.split("-").length;i++){ //entre mas - haya, mas veces se va a correr, y por cada vuelta vamos a interesarnos en la persona que estemos parados
-            String persona=linea.split("-")[i]; //separa por los - convirtiendolo en array, separando a las personas
+    public static boolean verificarNombre(String nombre, String linea){
+        for(int i=0;i<linea.split("-").length;i++){ //entre mas - haya, mas veces se va a correr el for, y por cada vuelta vamos a interesarnos en la persona que estemos parados
+            String persona=linea.split("-")[i];
             String nombrePerso=persona.split(":")[0];
             if(nombrePerso.equals(nombre)){
                 return true;
@@ -39,14 +39,14 @@ public class Cliente {
         String mensajeCompleto=receptor + ":" + mensaje + ":" + emisor;
         InetAddress ipSiguiente;
         int puertoSiguiente;
-        for(int i=0;i<linea.split("-").length;i++){ //se va a recorrer la lista con todas las personas y por cada vuelta se para en cada persona
+        for(int i=0;i<linea.split("-").length;i++){
             String persona=linea.split("-")[i]; //crea un array separando a cada persona una de otra por los -
             String nombrePerso=persona.split(":")[0];
             if(nombrePerso.equals(emisor)){
                 try{
-                if(i<linea.split("-").length){ //se fija si no es el ultimo en la lista
-                    ipSiguiente=InetAddress.getByName(linea.split("-")[i+1].split(":")[1]); //igualas la ipSiguiente a la ip de la siguiente persona en la que estas parado
-                    puertoSiguiente=parseInt(linea.split("-")[i+1].split(":")[2]); //igualas el puerto al puerto de la siguiente persona en la que estes parado
+                if(i<linea.split("-").length-1){ //se fija si no es el ultimo en la lista
+                    ipSiguiente=InetAddress.getByName(linea.split("-")[i+1].split(":")[1]);
+                    puertoSiguiente=parseInt(linea.split("-")[i+1].split(":")[2]);
                 }else{
                     ipSiguiente=InetAddress.getByName(linea.split("-")[0].split(":")[1]);
                     puertoSiguiente=parseInt(linea.split("-")[0].split(":")[2]);
@@ -72,15 +72,15 @@ public class Cliente {
         try{
             Scanner leerMensaje=new Scanner(System.in);
             DatagramSocket socket=new DatagramSocket(puerto);
-            Scanner scannerLector=new Scanner(archivoConfig);//para leer el archivoConfig.txt
+            Scanner scannerLector=new Scanner(archivoConfig);
             String info=scannerLector.nextLine();
-            Scanner scannerLectorP=new Scanner(archivoPersona);//para leer el archivoPersona.txt
+            Scanner scannerLectorP=new Scanner(archivoPersona);
             String nombrePersona=Cliente.nombrePropio(scannerLectorP);
             if(Cliente.verificarNombre(nombrePersona, info)) {
                 System.out.println("se ha verificado tu nombre y estas en el archivo");
+                Thread escucha=new Thread(new ThreadRecibir(socket, info, nombrePersona));
+                escucha.start(); //se corre el hilo
                 while(true){
-                    Thread escucha=new Thread(new ThreadRecibir(socket, info, nombrePersona));
-                    escucha.start(); //se corre el hilo
                     String nombreReceptor=Cliente.nombreAenviar();
                     if(Cliente.verificarNombre(nombreReceptor, info)){
                         System.out.println("la persona esta en el archivo");
